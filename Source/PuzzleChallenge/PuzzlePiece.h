@@ -9,8 +9,10 @@
 UENUM()
 enum class EPuzzleSideType
 {
-	Arrow,
-	InvertedArrow,
+	InwardArrow,
+	OutwardArrow,
+	InwardInvertedArrow,
+	OutwardInvertedArrow,
 	Cross,
 	InvertedCross,
 	Octagon,
