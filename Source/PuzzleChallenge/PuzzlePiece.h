@@ -17,6 +17,7 @@ enum class EPuzzleSideType
 	InvertedCross,
 	Octagon,
 	InvertedOctagon,
+	None,
 };
 
 UENUM()
@@ -45,6 +46,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	bool canBeUsedTwice = false;
+	int timesUsed = 0;
 	int index;
 
 	//TMap<EPuzzlePieceSide, EPuzzleSideType> 

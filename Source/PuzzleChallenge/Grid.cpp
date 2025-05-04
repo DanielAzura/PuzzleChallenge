@@ -40,11 +40,10 @@ void AGrid::BeginPlay()
 
     Reset();
 
-    //OrderPieces();
+    OrderPieces();
 
     for (int i = 0; i < 16; i++)
     {
-        Rotate(puzzlePieces[i], i);
 
         if (i % 4 == 0 && i != 0)
         {
@@ -149,8 +148,11 @@ void AGrid::Reset()
     OutwardArrow.push_back(puzzlePieces[6]);
     puzzlePieces[6]->Left = EPuzzleSideType::OutwardInvertedArrow;
     OutwardInvertedArrow.push_back(puzzlePieces[6]);
-    puzzlePieces[6]->Right = EPuzzleSideType::InwardArrow;
+    puzzlePieces[6]->Right = EPuzzleSideType::OutwardArrow;
     InwardArrow.push_back(puzzlePieces[6]);
+    puzzlePieces[6]->canBeUsedTwice = true;
+    puzzlePieces[6]->timesUsed = 0;
+
 
     //Piece 8
     puzzlePieces[7]->Top = EPuzzleSideType::InvertedOctagon;
@@ -171,8 +173,10 @@ void AGrid::Reset()
     InwardInvertedArrow.push_back(puzzlePieces[8]);
     puzzlePieces[8]->Right = EPuzzleSideType::Octagon;
     Octagon.push_back(puzzlePieces[8]);
+    puzzlePieces[8]->canBeUsedTwice = true;
+    puzzlePieces[8]->timesUsed = 0;
 
-    //Piece 19
+    //Piece 10
     puzzlePieces[9]->Top = EPuzzleSideType::InwardInvertedArrow;
     InwardInvertedArrow.push_back(puzzlePieces[9]);
     puzzlePieces[9]->Bottom = EPuzzleSideType::InwardArrow;
@@ -181,6 +185,9 @@ void AGrid::Reset()
     InvertedCross.push_back(puzzlePieces[9]);
     puzzlePieces[9]->Right = EPuzzleSideType::InwardArrow;
     InwardArrow.push_back(puzzlePieces[9]);
+    puzzlePieces[9]->canBeUsedTwice = true;
+    puzzlePieces[9]->timesUsed = 0;
+
 
     //Piece 11
     puzzlePieces[10]->Top = EPuzzleSideType::InvertedOctagon;
@@ -211,6 +218,8 @@ void AGrid::Reset()
     Cross.push_back(puzzlePieces[12]);
     puzzlePieces[12]->Right = EPuzzleSideType::InwardArrow;
     InwardArrow.push_back(puzzlePieces[12]);
+    puzzlePieces[12]->canBeUsedTwice = true;
+    puzzlePieces[12]->timesUsed = 0;
 
     //Piece 14
     puzzlePieces[13]->Top = EPuzzleSideType::InvertedCross;
@@ -231,6 +240,8 @@ void AGrid::Reset()
     InwardInvertedArrow.push_back(puzzlePieces[14]);
     puzzlePieces[14]->Right = EPuzzleSideType::Octagon;
     Octagon.push_back(puzzlePieces[14]);
+    puzzlePieces[14]->canBeUsedTwice = true;
+    puzzlePieces[14]->timesUsed = 0;
 
     //Piece 16
     puzzlePieces[15]->Top = EPuzzleSideType::InwardArrow;
@@ -279,8 +290,7 @@ APuzzlePiece* AGrid::FindNextPiece(APuzzlePiece* currentPiece)
 
         if (neededPiece == EPuzzleSideType::InwardArrow)
         {
-            int size = InwardInvertedArrow.size();
-            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, InwardInvertedArrow);
+            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, InwardInvertedArrow, EPuzzleSideType::InwardInvertedArrow);
             if (suitablePiece != nullptr)
             {
                 return suitablePiece;
@@ -290,8 +300,7 @@ APuzzlePiece* AGrid::FindNextPiece(APuzzlePiece* currentPiece)
         }
         if (neededPiece == EPuzzleSideType::OutwardArrow)
         {
-            int size = OutwardInvertedArrow.size();
-            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, OutwardInvertedArrow);
+            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, OutwardInvertedArrow, EPuzzleSideType::OutwardInvertedArrow);
             if (suitablePiece != nullptr)
             {
                 return suitablePiece;
@@ -302,7 +311,7 @@ APuzzlePiece* AGrid::FindNextPiece(APuzzlePiece* currentPiece)
         if (neededPiece == EPuzzleSideType::InwardInvertedArrow)
         {
             int size = InwardArrow.size();
-            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, InwardArrow);
+            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, InwardArrow, EPuzzleSideType::InwardArrow);
             if (suitablePiece != nullptr)
             {
                 return suitablePiece;
@@ -313,7 +322,7 @@ APuzzlePiece* AGrid::FindNextPiece(APuzzlePiece* currentPiece)
         if (neededPiece == EPuzzleSideType::OutwardInvertedArrow)
         {
             int size = OutwardArrow.size();
-            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, OutwardArrow);
+            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, OutwardArrow, EPuzzleSideType::OutwardArrow);
             if (suitablePiece != nullptr)
             {
                 return suitablePiece;
@@ -324,7 +333,7 @@ APuzzlePiece* AGrid::FindNextPiece(APuzzlePiece* currentPiece)
         if (neededPiece == EPuzzleSideType::Cross)
         {
             int size = InvertedCross.size();
-            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, InvertedCross);
+            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, InvertedCross, EPuzzleSideType::InvertedCross);
             if (suitablePiece != nullptr)
             {
                 return suitablePiece;
@@ -335,7 +344,7 @@ APuzzlePiece* AGrid::FindNextPiece(APuzzlePiece* currentPiece)
         if (neededPiece == EPuzzleSideType::InvertedCross)
         {
             int size = Cross.size();
-            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, Cross);
+            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, Cross, EPuzzleSideType::Cross);
             if (suitablePiece != nullptr)
             {
                 return suitablePiece;
@@ -346,7 +355,7 @@ APuzzlePiece* AGrid::FindNextPiece(APuzzlePiece* currentPiece)
         if (neededPiece == EPuzzleSideType::Octagon)
         {
             int size = InvertedOctagon.size();
-            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, InvertedOctagon);
+            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, InvertedOctagon, EPuzzleSideType::InvertedOctagon);
             if (suitablePiece != nullptr)
             {
                 return suitablePiece;
@@ -357,7 +366,7 @@ APuzzlePiece* AGrid::FindNextPiece(APuzzlePiece* currentPiece)
         if (neededPiece == EPuzzleSideType::InvertedOctagon)
         {
             int size = Octagon.size();
-            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, Octagon);
+            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, Octagon, EPuzzleSideType::Octagon);
             if (suitablePiece != nullptr)
             {
                 return suitablePiece;
@@ -394,18 +403,21 @@ void AGrid::OrderPieces()
         }
         else
         {
-            //Change the next piece to something else if fail
-
+            //Reset the pieces checked with this one
+            if (NumPiecesRemoved != 0)
+                NumPiecesRemoved -= 1;
+            PiecesTriedWithThisPiece[OrderOfPieces.back()].empty();
             //if (OrderOfPieces > 1)?
             OrderOfPieces.pop_back();
             //Set the check piece to the last piece
+            //Change the next piece to something else if fail
             checkPiece = puzzlePieces[OrderOfPieces.back()];
             nextPiece = nullptr;
         }
     } while (NumPiecesRemoved != 16);
 }
 
-APuzzlePiece* AGrid::FindSuitablePiece(APuzzlePiece* currentPiece, std::vector<APuzzlePiece*> vectorOfPieces)
+APuzzlePiece* AGrid::FindSuitablePiece(APuzzlePiece* currentPiece, std::vector<APuzzlePiece*> vectorOfPieces, EPuzzleSideType SidePiece, EPuzzleSideType TopPiece)
 {
     for (int i = 0; i < vectorOfPieces.size(); i++)
     {
@@ -419,12 +431,32 @@ APuzzlePiece* AGrid::FindSuitablePiece(APuzzlePiece* currentPiece, std::vector<A
         else
         {
             NumPiecesRemoved += 1;
-            PiecesTriedWithThisPiece[currentPiece->index].push_back(vectorOfPieces[i]->index);
 
             APuzzlePiece* returnedPiece = vectorOfPieces[i];
 
-            auto it = std::find(vectorOfPieces.begin(), vectorOfPieces.end(), vectorOfPieces[i]);
-            vectorOfPieces.erase(it);
+            if (!returnedPiece->canBeUsedTwice)
+            {
+                PiecesTriedWithThisPiece[currentPiece->index].push_back(vectorOfPieces[i]->index);
+
+                auto it = std::find(vectorOfPieces.begin(), vectorOfPieces.end(), vectorOfPieces[i]);
+                vectorOfPieces.erase(it);
+            }
+            else
+            {
+                // TODO find a way to check which side piece was used and rotate and use the other one
+                //You could use the first one needed and then if it was used before, dont take the first available one, rotate it
+
+
+                if (returnedPiece->timesUsed < 1)
+                    returnedPiece->timesUsed++;
+                else
+                {
+                    PiecesTriedWithThisPiece[currentPiece->index].push_back(vectorOfPieces[i]->index);
+
+                    auto it = std::find(vectorOfPieces.begin(), vectorOfPieces.end(), vectorOfPieces[i]);
+                    vectorOfPieces.erase(it);
+                }
+            }
 
             return returnedPiece;
         }
