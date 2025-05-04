@@ -58,6 +58,9 @@ void AGrid::BeginPlay()
         //swap the i for index;
         puzzlePieces[i]->SetActorLocation(SpawnLoc);
     }
+    EPuzzleSideType type;
+    type = puzzlePieces[1]->Bottom;
+    int foo = 0;
 }
 
 // Called every frame

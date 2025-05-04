@@ -45,6 +45,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	int index;
+
 	//TMap<EPuzzlePieceSide, EPuzzleSideType> 
 	EPuzzleSideType Top;
 	EPuzzleSideType Bottom;

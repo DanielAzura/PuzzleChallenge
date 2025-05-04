@@ -29,7 +29,20 @@ public:
 
     void Reset();
 
+    void Rotate(APuzzlePiece* puzzlePiece, int iterations);
+
+    void OrderPieces();
+
+    APuzzlePiece* FindNextPiece(APuzzlePiece* currentPiece);
+    
+    APuzzlePiece* FindSuitablePiece(APuzzlePiece* currentPiece, std::vector<APuzzlePiece*> vectorOfPieces);
+
 private:
+
+    int NumPiecesRemoved = 0;
+    std::vector<int> OrderOfPieces;
+
+    TMap<int, std::vector<int>> PiecesTriedWithThisPiece;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess), Category = "Components")
     TArray<class APuzzlePiece*> puzzlePieces;
@@ -37,15 +50,14 @@ private:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess), Category = "Components")
     TArray<class UPaperSprite*> PuzzleSprites;
 
-    std::vector<EPuzzleSideType> InwardArrow;
-    std::vector<EPuzzleSideType> OutwardArrow;
-    std::vector<EPuzzleSideType> InwardInvertedArrow;
-    std::vector<EPuzzleSideType> OutwardInvertedArrow;
-    std::vector<EPuzzleSideType> Cross;
-    std::vector<EPuzzleSideType> InvertedCross;
-    std::vector<EPuzzleSideType> Octagon;
-    std::vector<EPuzzleSideType> InvertedOctagon;
 
 
-
+    std::vector<APuzzlePiece*> InwardArrow;
+    std::vector<APuzzlePiece*> OutwardArrow;
+    std::vector<APuzzlePiece*> InwardInvertedArrow;
+    std::vector<APuzzlePiece*> OutwardInvertedArrow;
+    std::vector<APuzzlePiece*> Cross;
+    std::vector<APuzzlePiece*> InvertedCross;
+    std::vector<APuzzlePiece*> Octagon;
+    std::vector<APuzzlePiece*> InvertedOctagon;
 };
