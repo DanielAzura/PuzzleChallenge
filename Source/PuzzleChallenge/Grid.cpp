@@ -53,9 +53,13 @@ void AGrid::BeginPlay()
 
         SpawnLoc.X += 250;
 
-        //int index = OrderOfPieces[i];
-        //swap the i for index;
-        puzzlePieces[i]->SetActorLocation(SpawnLoc);
+        if (i < 4)
+        {
+
+            int index = OrderOfPieces[i];
+            //swap the i for index;
+            puzzlePieces[index]->SetActorLocation(SpawnLoc);
+        }
     }
 }
 
@@ -388,10 +392,11 @@ void AGrid::OrderPieces()
     APuzzlePiece* storedLastPiece = nullptr;
     do
     {
-        if (NumPiecesRemoved == 4) //4 For now to test the first row
+        if (OrderOfPieces.size() == 4) //4 For now to test the first row
             break;
 
         nextPiece = FindNextPiece(checkPiece);
+
 
         if (nextPiece)
         {
@@ -419,48 +424,56 @@ void AGrid::OrderPieces()
 
 APuzzlePiece* AGrid::FindSuitablePiece(APuzzlePiece* currentPiece, std::vector<APuzzlePiece*> vectorOfPieces, EPuzzleSideType SidePiece, EPuzzleSideType TopPiece)
 {
-    for (int i = 0; i < vectorOfPieces.size(); i++)
+    if (TopPiece == EPuzzleSideType::None)
     {
-        //Checking if vector has tried the piece before
-        if (std::find(PiecesTriedWithThisPiece[currentPiece->index].begin(),
-            PiecesTriedWithThisPiece[currentPiece->index].end(),
-            vectorOfPieces[i]->index) != PiecesTriedWithThisPiece[currentPiece->index].end())
+        for (int i = 0; i < vectorOfPieces.size(); i++)
         {
-            continue;
-        }
-        else
-        {
-            NumPiecesRemoved += 1;
-
-            APuzzlePiece* returnedPiece = vectorOfPieces[i];
-
-            if (!returnedPiece->canBeUsedTwice)
+            //Checking if vector has tried the piece before
+            if (std::find(PiecesTriedWithThisPiece[currentPiece->index].begin(),
+                PiecesTriedWithThisPiece[currentPiece->index].end(),
+                vectorOfPieces[i]->index) != PiecesTriedWithThisPiece[currentPiece->index].end())
             {
-                PiecesTriedWithThisPiece[currentPiece->index].push_back(vectorOfPieces[i]->index);
-
-                auto it = std::find(vectorOfPieces.begin(), vectorOfPieces.end(), vectorOfPieces[i]);
-                vectorOfPieces.erase(it);
+                continue;
             }
             else
             {
-                // TODO find a way to check which side piece was used and rotate and use the other one
-                //You could use the first one needed and then if it was used before, dont take the first available one, rotate it
+                NumPiecesRemoved += 1;
 
+                APuzzlePiece* returnedPiece = vectorOfPieces[i];
 
-                if (returnedPiece->timesUsed < 1)
-                    returnedPiece->timesUsed++;
-                else
+                if (!returnedPiece->canBeUsedTwice)
                 {
                     PiecesTriedWithThisPiece[currentPiece->index].push_back(vectorOfPieces[i]->index);
 
                     auto it = std::find(vectorOfPieces.begin(), vectorOfPieces.end(), vectorOfPieces[i]);
                     vectorOfPieces.erase(it);
                 }
-            }
+                else
+                {
+                    // TODO find a way to check which side piece was used and rotate and use the other one
+                    //You could use the first one needed and then if it was used before, 
+                    // dont take the first available one, rotate it
 
-            return returnedPiece;
+                    if (returnedPiece->timesUsed < 1)
+                        returnedPiece->timesUsed++;
+                    else
+                    {
+                        PiecesTriedWithThisPiece[currentPiece->index].push_back(vectorOfPieces[i]->index);
+
+                        auto it = std::find(vectorOfPieces.begin(), vectorOfPieces.end(), vectorOfPieces[i]);
+                        vectorOfPieces.erase(it);
+
+                        Rotate(returnedPiece, 1);
+                    }
+                }
+
+                while (returnedPiece->Left != SidePiece)
+                {
+                    Rotate(returnedPiece, 1);
+                }
+                return returnedPiece;
+            }
         }
     }
     return nullptr;
 }
-

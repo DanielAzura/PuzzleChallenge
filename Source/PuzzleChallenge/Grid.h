@@ -35,7 +35,7 @@ public:
 
     APuzzlePiece* FindNextPiece(APuzzlePiece* currentPiece);
     
-    APuzzlePiece* FindSuitablePiece(APuzzlePiece* currentPiece, std::vector<APuzzlePiece*> vectorOfPieces, EPuzzleSideType SidePiece, EPuzzleSideType TopPiece);
+    APuzzlePiece* FindSuitablePiece(APuzzlePiece* currentPiece, std::vector<APuzzlePiece*> vectorOfPieces, EPuzzleSideType SidePiece, EPuzzleSideType TopPiece = EPuzzleSideType::None);
 
 private:
 
