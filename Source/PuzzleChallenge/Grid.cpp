@@ -55,12 +55,12 @@ void AGrid::BeginPlay()
 
         if (i < 4)
         {
-
             int index = OrderOfPieces[i];
             //swap the i for index;
             puzzlePieces[index]->SetActorLocation(SpawnLoc);
         }
     }
+    int foo = 0;
 }
 
 // Called every frame
@@ -270,10 +270,7 @@ void AGrid::Rotate(APuzzlePiece* puzzlePiece, int iterations)
         puzzlePiece->Left = puzzlePiece->Bottom;
         puzzlePiece->Bottom = puzzlePiece->Right;
         puzzlePiece->Right = temp;
-
-        rotation.Pitch -= 90;
     }
-    puzzlePiece->SetActorRotation(rotation);
 }
 
 //TODO IMPLEMENT ROTATE LOGIC
@@ -294,7 +291,7 @@ APuzzlePiece* AGrid::FindNextPiece(APuzzlePiece* currentPiece)
 
         if (neededPiece == EPuzzleSideType::InwardArrow)
         {
-            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, InwardInvertedArrow, EPuzzleSideType::InwardInvertedArrow);
+            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, OutwardInvertedArrow, EPuzzleSideType::OutwardInvertedArrow);
             if (suitablePiece != nullptr)
             {
                 return suitablePiece;
@@ -304,7 +301,7 @@ APuzzlePiece* AGrid::FindNextPiece(APuzzlePiece* currentPiece)
         }
         if (neededPiece == EPuzzleSideType::OutwardArrow)
         {
-            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, OutwardInvertedArrow, EPuzzleSideType::OutwardInvertedArrow);
+            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, InwardInvertedArrow, EPuzzleSideType::InwardInvertedArrow);
             if (suitablePiece != nullptr)
             {
                 return suitablePiece;
@@ -315,7 +312,7 @@ APuzzlePiece* AGrid::FindNextPiece(APuzzlePiece* currentPiece)
         if (neededPiece == EPuzzleSideType::InwardInvertedArrow)
         {
             int size = InwardArrow.size();
-            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, InwardArrow, EPuzzleSideType::InwardArrow);
+            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, OutwardArrow, EPuzzleSideType::OutwardArrow);
             if (suitablePiece != nullptr)
             {
                 return suitablePiece;
@@ -326,7 +323,7 @@ APuzzlePiece* AGrid::FindNextPiece(APuzzlePiece* currentPiece)
         if (neededPiece == EPuzzleSideType::OutwardInvertedArrow)
         {
             int size = OutwardArrow.size();
-            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, OutwardArrow, EPuzzleSideType::OutwardArrow);
+            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, InwardArrow, EPuzzleSideType::InwardArrow);
             if (suitablePiece != nullptr)
             {
                 return suitablePiece;
@@ -385,6 +382,7 @@ APuzzlePiece* AGrid::FindNextPiece(APuzzlePiece* currentPiece)
 void AGrid::OrderPieces()
 {
     APuzzlePiece* startingPiece = puzzlePieces[FMath::RandRange(0, puzzlePieces.Num() - 1)];
+    //APuzzlePiece* startingPiece = puzzlePieces[5];
     OrderOfPieces.push_back(startingPiece->index);
 
     APuzzlePiece* checkPiece = startingPiece;
@@ -428,10 +426,13 @@ APuzzlePiece* AGrid::FindSuitablePiece(APuzzlePiece* currentPiece, std::vector<A
     {
         for (int i = 0; i < vectorOfPieces.size(); i++)
         {
-            //Checking if vector has tried the piece before
+            //Checking if vector has tried the piece before or if piece is already in use
             if (std::find(PiecesTriedWithThisPiece[currentPiece->index].begin(),
                 PiecesTriedWithThisPiece[currentPiece->index].end(),
-                vectorOfPieces[i]->index) != PiecesTriedWithThisPiece[currentPiece->index].end())
+                vectorOfPieces[i]->index) != PiecesTriedWithThisPiece[currentPiece->index].end() ||
+                std::find(OrderOfPieces.begin(),
+                OrderOfPieces.end(),
+                vectorOfPieces[i]->index) != OrderOfPieces.end())
             {
                 continue;
             }
@@ -466,11 +467,17 @@ APuzzlePiece* AGrid::FindSuitablePiece(APuzzlePiece* currentPiece, std::vector<A
                         Rotate(returnedPiece, 1);
                     }
                 }
-
+                int iterations =0;
+                  
                 while (returnedPiece->Left != SidePiece)
                 {
                     Rotate(returnedPiece, 1);
+                    iterations++;
                 }
+                FRotator rotation = returnedPiece->GetActorRotation();
+                rotation.Pitch -= (90 * iterations);
+                returnedPiece->SetActorRotation(rotation);
+
                 return returnedPiece;
             }
         }
