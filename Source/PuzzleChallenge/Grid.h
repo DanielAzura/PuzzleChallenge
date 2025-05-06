@@ -37,6 +37,7 @@ public:
     
     APuzzlePiece* FindSuitablePiece(APuzzlePiece* currentPiece, std::vector<APuzzlePiece*> vectorOfPieces, EPuzzleSideType SidePiece, EPuzzleSideType TopPiece = EPuzzleSideType::None);
 
+    APuzzlePiece* SelectNeededVector(APuzzlePiece* currentPiece, APuzzlePiece* neededPiece, EPuzzlePieceSide side);
 private:
 
     int NumPiecesRemoved = 0;

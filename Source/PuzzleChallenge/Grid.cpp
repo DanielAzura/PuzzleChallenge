@@ -53,7 +53,7 @@ void AGrid::BeginPlay()
 
         SpawnLoc.X += 250;
 
-        if (i < 4)
+        if (i < 8)
         {
             int index = OrderOfPieces[i];
             //swap the i for index;
@@ -311,7 +311,6 @@ APuzzlePiece* AGrid::FindNextPiece(APuzzlePiece* currentPiece)
         }
         if (neededPiece == EPuzzleSideType::InwardInvertedArrow)
         {
-            int size = InwardArrow.size();
             APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, OutwardArrow, EPuzzleSideType::OutwardArrow);
             if (suitablePiece != nullptr)
             {
@@ -322,7 +321,6 @@ APuzzlePiece* AGrid::FindNextPiece(APuzzlePiece* currentPiece)
         }
         if (neededPiece == EPuzzleSideType::OutwardInvertedArrow)
         {
-            int size = OutwardArrow.size();
             APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, InwardArrow, EPuzzleSideType::InwardArrow);
             if (suitablePiece != nullptr)
             {
@@ -333,7 +331,6 @@ APuzzlePiece* AGrid::FindNextPiece(APuzzlePiece* currentPiece)
         }
         if (neededPiece == EPuzzleSideType::Cross)
         {
-            int size = InvertedCross.size();
             APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, InvertedCross, EPuzzleSideType::InvertedCross);
             if (suitablePiece != nullptr)
             {
@@ -344,7 +341,6 @@ APuzzlePiece* AGrid::FindNextPiece(APuzzlePiece* currentPiece)
         }
         if (neededPiece == EPuzzleSideType::InvertedCross)
         {
-            int size = Cross.size();
             APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, Cross, EPuzzleSideType::Cross);
             if (suitablePiece != nullptr)
             {
@@ -355,7 +351,6 @@ APuzzlePiece* AGrid::FindNextPiece(APuzzlePiece* currentPiece)
         }
         if (neededPiece == EPuzzleSideType::Octagon)
         {
-            int size = InvertedOctagon.size();
             APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, InvertedOctagon, EPuzzleSideType::InvertedOctagon);
             if (suitablePiece != nullptr)
             {
@@ -366,7 +361,108 @@ APuzzlePiece* AGrid::FindNextPiece(APuzzlePiece* currentPiece)
         }
         if (neededPiece == EPuzzleSideType::InvertedOctagon)
         {
-            int size = Octagon.size();
+            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, Octagon, EPuzzleSideType::Octagon);
+            if (suitablePiece != nullptr)
+            {
+                return suitablePiece;
+            }
+            else
+                return nullptr;
+        }
+    }
+    else if (OrderOfPieces.size() < 8)
+    {
+        EPuzzleSideType neededSidePiece = currentPiece->Right;
+        //EPuzzleSideType neededPiece = currentPiece->Right;
+        EPuzzleSideType neededTopPiece = currentPiece->Top;
+
+        if (OrderOfPieces.size() % 4 == 0)
+        {
+            neededSidePiece = EPuzzleSideType::None;
+        }
+
+        //TODO Make this a function somehow because this shit is LONG
+        //Variables, currentPiece, neededPiece, 
+        //Adding self to pieces tried to not go over self
+        if (!PiecesTriedWithThisPiece.Contains(currentPiece->index))
+        {
+            std::vector<int> triedPieces;
+            triedPieces.push_back(currentPiece->index);
+            PiecesTriedWithThisPiece.Add(currentPiece->index, triedPieces);
+        }
+
+        if (neededPiece == EPuzzleSideType::InwardArrow)
+        {
+            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, OutwardInvertedArrow, EPuzzleSideType::OutwardInvertedArrow);
+            if (suitablePiece != nullptr)
+            {
+                return suitablePiece;
+            }
+            else
+                return nullptr;
+        }
+        if (neededPiece == EPuzzleSideType::OutwardArrow)
+        {
+            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, InwardInvertedArrow, EPuzzleSideType::InwardInvertedArrow);
+            if (suitablePiece != nullptr)
+            {
+                return suitablePiece;
+            }
+            else
+                return nullptr;
+        }
+        if (neededPiece == EPuzzleSideType::InwardInvertedArrow)
+        {
+            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, OutwardArrow, EPuzzleSideType::OutwardArrow);
+            if (suitablePiece != nullptr)
+            {
+                return suitablePiece;
+            }
+            else
+                return nullptr;
+        }
+        if (neededPiece == EPuzzleSideType::OutwardInvertedArrow)
+        {
+            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, InwardArrow, EPuzzleSideType::InwardArrow);
+            if (suitablePiece != nullptr)
+            {
+                return suitablePiece;
+            }
+            else
+                return nullptr;
+        }
+        if (neededPiece == EPuzzleSideType::Cross)
+        {
+            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, InvertedCross, EPuzzleSideType::InvertedCross);
+            if (suitablePiece != nullptr)
+            {
+                return suitablePiece;
+            }
+            else
+                return nullptr;
+        }
+        if (neededPiece == EPuzzleSideType::InvertedCross)
+        {
+            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, Cross, EPuzzleSideType::Cross);
+            if (suitablePiece != nullptr)
+            {
+                return suitablePiece;
+            }
+            else
+                return nullptr;
+        }
+        if (neededPiece == EPuzzleSideType::Octagon)
+        {
+            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, InvertedOctagon, EPuzzleSideType::InvertedOctagon);
+            if (suitablePiece != nullptr)
+            {
+                return suitablePiece;
+            }
+            else
+                return nullptr;
+        }
+        if (neededPiece == EPuzzleSideType::InvertedOctagon)
+        {
             APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, Octagon, EPuzzleSideType::Octagon);
             if (suitablePiece != nullptr)
             {
@@ -390,7 +486,7 @@ void AGrid::OrderPieces()
     APuzzlePiece* storedLastPiece = nullptr;
     do
     {
-        if (OrderOfPieces.size() == 4) //4 For now to test the first row
+        if (OrderOfPieces.size() == 8) //Set to 8 to test next row
             break;
 
         nextPiece = FindNextPiece(checkPiece);
@@ -409,11 +505,21 @@ void AGrid::OrderPieces()
             //Reset the pieces checked with this one
             if (NumPiecesRemoved != 0)
                 NumPiecesRemoved -= 1;
-            PiecesTriedWithThisPiece[OrderOfPieces.back()].empty();
-            //if (OrderOfPieces > 1)?
-            OrderOfPieces.pop_back();
+            int indexBack = OrderOfPieces.back();
+
+            if (PiecesTriedWithThisPiece.Contains(indexBack))
+                PiecesTriedWithThisPiece[indexBack].clear();
+
+            if (OrderOfPieces.size() > 1)
+                OrderOfPieces.pop_back();
+
+            indexBack = OrderOfPieces.back();
+
+            if (PiecesTriedWithThisPiece.Contains(indexBack))
+                PiecesTriedWithThisPiece[indexBack].clear();
             //Set the check piece to the last piece
             //Change the next piece to something else if fail
+
             checkPiece = puzzlePieces[OrderOfPieces.back()];
             nextPiece = nullptr;
         }
@@ -431,8 +537,8 @@ APuzzlePiece* AGrid::FindSuitablePiece(APuzzlePiece* currentPiece, std::vector<A
                 PiecesTriedWithThisPiece[currentPiece->index].end(),
                 vectorOfPieces[i]->index) != PiecesTriedWithThisPiece[currentPiece->index].end() ||
                 std::find(OrderOfPieces.begin(),
-                OrderOfPieces.end(),
-                vectorOfPieces[i]->index) != OrderOfPieces.end())
+                    OrderOfPieces.end(),
+                    vectorOfPieces[i]->index) != OrderOfPieces.end())
             {
                 continue;
             }
@@ -451,9 +557,7 @@ APuzzlePiece* AGrid::FindSuitablePiece(APuzzlePiece* currentPiece, std::vector<A
                 }
                 else
                 {
-                    // TODO find a way to check which side piece was used and rotate and use the other one
-                    //You could use the first one needed and then if it was used before, 
-                    // dont take the first available one, rotate it
+      
 
                     if (returnedPiece->timesUsed < 1)
                         returnedPiece->timesUsed++;
@@ -467,8 +571,8 @@ APuzzlePiece* AGrid::FindSuitablePiece(APuzzlePiece* currentPiece, std::vector<A
                         Rotate(returnedPiece, 1);
                     }
                 }
-                int iterations =0;
-                  
+                int iterations = 0;
+
                 while (returnedPiece->Left != SidePiece)
                 {
                     Rotate(returnedPiece, 1);
@@ -482,5 +586,10 @@ APuzzlePiece* AGrid::FindSuitablePiece(APuzzlePiece* currentPiece, std::vector<A
             }
         }
     }
+    return nullptr;
+}
+
+APuzzlePiece* AGrid::SelectNeededVector(APuzzlePiece* currentPiece, APuzzlePiece* neededPiece, EPuzzlePieceSide side)
+{
     return nullptr;
 }
