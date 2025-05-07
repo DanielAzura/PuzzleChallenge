@@ -273,208 +273,6 @@ void AGrid::Rotate(APuzzlePiece* puzzlePiece, int iterations)
     }
 }
 
-//TODO IMPLEMENT ROTATE LOGIC
-
-APuzzlePiece* AGrid::FindNextPiece(APuzzlePiece* currentPiece)
-{
-    if (NumPiecesRemoved < 4)
-    {
-        EPuzzleSideType neededPiece = currentPiece->Right;
-
-        //Adding self to pieces tried to not go over self
-        if (!PiecesTriedWithThisPiece.Contains(currentPiece->index))
-        {
-            std::vector<int> triedPieces;
-            triedPieces.push_back(currentPiece->index);
-            PiecesTriedWithThisPiece.Add(currentPiece->index, triedPieces);
-        }
-
-        if (neededPiece == EPuzzleSideType::InwardArrow)
-        {
-            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, OutwardInvertedArrow, EPuzzleSideType::OutwardInvertedArrow);
-            if (suitablePiece != nullptr)
-            {
-                return suitablePiece;
-            }
-            else
-                return nullptr;
-        }
-        if (neededPiece == EPuzzleSideType::OutwardArrow)
-        {
-            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, InwardInvertedArrow, EPuzzleSideType::InwardInvertedArrow);
-            if (suitablePiece != nullptr)
-            {
-                return suitablePiece;
-            }
-            else
-                return nullptr;
-        }
-        if (neededPiece == EPuzzleSideType::InwardInvertedArrow)
-        {
-            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, OutwardArrow, EPuzzleSideType::OutwardArrow);
-            if (suitablePiece != nullptr)
-            {
-                return suitablePiece;
-            }
-            else
-                return nullptr;
-        }
-        if (neededPiece == EPuzzleSideType::OutwardInvertedArrow)
-        {
-            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, InwardArrow, EPuzzleSideType::InwardArrow);
-            if (suitablePiece != nullptr)
-            {
-                return suitablePiece;
-            }
-            else
-                return nullptr;
-        }
-        if (neededPiece == EPuzzleSideType::Cross)
-        {
-            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, InvertedCross, EPuzzleSideType::InvertedCross);
-            if (suitablePiece != nullptr)
-            {
-                return suitablePiece;
-            }
-            else
-                return nullptr;
-        }
-        if (neededPiece == EPuzzleSideType::InvertedCross)
-        {
-            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, Cross, EPuzzleSideType::Cross);
-            if (suitablePiece != nullptr)
-            {
-                return suitablePiece;
-            }
-            else
-                return nullptr;
-        }
-        if (neededPiece == EPuzzleSideType::Octagon)
-        {
-            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, InvertedOctagon, EPuzzleSideType::InvertedOctagon);
-            if (suitablePiece != nullptr)
-            {
-                return suitablePiece;
-            }
-            else
-                return nullptr;
-        }
-        if (neededPiece == EPuzzleSideType::InvertedOctagon)
-        {
-            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, Octagon, EPuzzleSideType::Octagon);
-            if (suitablePiece != nullptr)
-            {
-                return suitablePiece;
-            }
-            else
-                return nullptr;
-        }
-    }
-    else if (OrderOfPieces.size() < 8)
-    {
-        EPuzzleSideType neededSidePiece = currentPiece->Right;
-        //EPuzzleSideType neededPiece = currentPiece->Right;
-        EPuzzleSideType neededTopPiece = currentPiece->Top;
-
-        if (OrderOfPieces.size() % 4 == 0)
-        {
-            neededSidePiece = EPuzzleSideType::None;
-        }
-
-        //TODO Make this a function somehow because this shit is LONG
-        //Variables, currentPiece, neededPiece, 
-        //Adding self to pieces tried to not go over self
-        if (!PiecesTriedWithThisPiece.Contains(currentPiece->index))
-        {
-            std::vector<int> triedPieces;
-            triedPieces.push_back(currentPiece->index);
-            PiecesTriedWithThisPiece.Add(currentPiece->index, triedPieces);
-        }
-
-        if (neededPiece == EPuzzleSideType::InwardArrow)
-        {
-            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, OutwardInvertedArrow, EPuzzleSideType::OutwardInvertedArrow);
-            if (suitablePiece != nullptr)
-            {
-                return suitablePiece;
-            }
-            else
-                return nullptr;
-        }
-        if (neededPiece == EPuzzleSideType::OutwardArrow)
-        {
-            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, InwardInvertedArrow, EPuzzleSideType::InwardInvertedArrow);
-            if (suitablePiece != nullptr)
-            {
-                return suitablePiece;
-            }
-            else
-                return nullptr;
-        }
-        if (neededPiece == EPuzzleSideType::InwardInvertedArrow)
-        {
-            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, OutwardArrow, EPuzzleSideType::OutwardArrow);
-            if (suitablePiece != nullptr)
-            {
-                return suitablePiece;
-            }
-            else
-                return nullptr;
-        }
-        if (neededPiece == EPuzzleSideType::OutwardInvertedArrow)
-        {
-            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, InwardArrow, EPuzzleSideType::InwardArrow);
-            if (suitablePiece != nullptr)
-            {
-                return suitablePiece;
-            }
-            else
-                return nullptr;
-        }
-        if (neededPiece == EPuzzleSideType::Cross)
-        {
-            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, InvertedCross, EPuzzleSideType::InvertedCross);
-            if (suitablePiece != nullptr)
-            {
-                return suitablePiece;
-            }
-            else
-                return nullptr;
-        }
-        if (neededPiece == EPuzzleSideType::InvertedCross)
-        {
-            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, Cross, EPuzzleSideType::Cross);
-            if (suitablePiece != nullptr)
-            {
-                return suitablePiece;
-            }
-            else
-                return nullptr;
-        }
-        if (neededPiece == EPuzzleSideType::Octagon)
-        {
-            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, InvertedOctagon, EPuzzleSideType::InvertedOctagon);
-            if (suitablePiece != nullptr)
-            {
-                return suitablePiece;
-            }
-            else
-                return nullptr;
-        }
-        if (neededPiece == EPuzzleSideType::InvertedOctagon)
-        {
-            APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, Octagon, EPuzzleSideType::Octagon);
-            if (suitablePiece != nullptr)
-            {
-                return suitablePiece;
-            }
-            else
-                return nullptr;
-        }
-    }
-    return nullptr;
-}
-
 void AGrid::OrderPieces()
 {
     APuzzlePiece* startingPiece = puzzlePieces[FMath::RandRange(0, puzzlePieces.Num() - 1)];
@@ -526,19 +324,117 @@ void AGrid::OrderPieces()
     } while (NumPiecesRemoved != 16);
 }
 
-APuzzlePiece* AGrid::FindSuitablePiece(APuzzlePiece* currentPiece, std::vector<APuzzlePiece*> vectorOfPieces, EPuzzleSideType SidePiece, EPuzzleSideType TopPiece)
+APuzzlePiece* AGrid::FindNextPiece(APuzzlePiece* currentPiece)
 {
-    if (TopPiece == EPuzzleSideType::None)
+    if (!PiecesTriedWithThisPiece.Contains(currentPiece->index))
     {
-        for (int i = 0; i < vectorOfPieces.size(); i++)
+        std::vector<int> triedPieces;
+        triedPieces.push_back(currentPiece->index);
+        PiecesTriedWithThisPiece.Add(currentPiece->index, triedPieces);
+    }
+
+    EPuzzleSideType neededSidePiece = currentPiece->Right;
+    EPuzzleSideType neededTopPiece = currentPiece->Top;
+
+    if (OrderOfPieces.size() % 4 == 0)
+    {
+        neededSidePiece = EPuzzleSideType::None;
+    }
+
+    if (OrderOfPieces.size() < 4)
+    {
+        neededTopPiece = EPuzzleSideType::None;
+
+        APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, neededSidePiece, neededTopPiece);
+        if (suitablePiece != nullptr)
+            return suitablePiece;
+        else
+            return nullptr;
+    }
+    else if (OrderOfPieces.size() < 8)
+    {
+        APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, neededSidePiece, neededTopPiece);
+        if (suitablePiece != nullptr)
+            return suitablePiece;
+        else
+            return nullptr;
+
+    }
+    return nullptr;
+}
+
+bool AGrid::isPieceViable(APuzzlePiece* puzzlePiece, EPuzzleSideType SidePiece, EPuzzleSideType TopPiece)
+{
+    if (puzzlePiece->Top == TopPiece && puzzlePiece->Left == SidePiece ||
+        puzzlePiece->Right == TopPiece && puzzlePiece->Top == SidePiece ||
+        puzzlePiece->Bottom == TopPiece && puzzlePiece->Right == SidePiece ||
+        puzzlePiece->Left == TopPiece && puzzlePiece->Bottom == SidePiece)
+        return true;
+
+    return false;
+}
+
+APuzzlePiece* AGrid::FindSuitablePiece(APuzzlePiece* currentPiece, EPuzzleSideType SidePiece, EPuzzleSideType TopPiece)
+{
+    std::vector<APuzzlePiece*> SideVector = SelectNeededVector(SidePiece);
+    std::vector<APuzzlePiece*> TopVector = SelectNeededVector(TopPiece);
+
+    EPuzzleSideType neededSidePiece = SelectNeededSideType(SidePiece);
+    EPuzzleSideType neededTopPiece = SelectNeededSideType(TopPiece);
+
+    //TODO check in here where the bug is probably to do with the rotate while loop (not the <4 one)
+
+    if (TopPiece != EPuzzleSideType::None && SidePiece != EPuzzleSideType::None)
+    {
+        for (int i = 0; i < SideVector.size(); i++)
+        {
+            if (std::find(PiecesTriedWithThisPiece[currentPiece->index].begin(),
+                PiecesTriedWithThisPiece[currentPiece->index].end(),
+                SideVector[i]->index) != PiecesTriedWithThisPiece[currentPiece->index].end() ||
+                std::find(OrderOfPieces.begin(),
+                    OrderOfPieces.end(),
+                    SideVector[i]->index) != OrderOfPieces.end())
+            {
+                continue;
+            }
+            
+            if (isPieceViable(SideVector[i], SidePiece, TopPiece))
+            {
+                APuzzlePiece* returnedPiece = SideVector[i];
+                int iterations = 0;
+
+                PiecesTriedWithThisPiece[currentPiece->index].push_back(SideVector[i]->index);
+
+                auto it = std::find(TopVector.begin(), TopVector.end(), SideVector[i]);
+                TopVector.erase(it);
+
+                auto it2 = std::find(SideVector.begin(), SideVector.end(), SideVector[i]);
+                SideVector.erase(it2);
+
+                while (returnedPiece->Left != SidePiece && returnedPiece->Top != TopPiece)
+                {
+                    Rotate(returnedPiece, 1);
+                    iterations++;
+                }
+                FRotator rotation = returnedPiece->GetActorRotation();
+                rotation.Pitch -= (90 * iterations);
+                returnedPiece->SetActorRotation(rotation);
+
+                return returnedPiece;
+            }
+        }
+    }
+    else if (TopPiece == EPuzzleSideType::None)
+    {
+        for (int i = 0; i < SideVector.size(); i++)
         {
             //Checking if vector has tried the piece before or if piece is already in use
             if (std::find(PiecesTriedWithThisPiece[currentPiece->index].begin(),
                 PiecesTriedWithThisPiece[currentPiece->index].end(),
-                vectorOfPieces[i]->index) != PiecesTriedWithThisPiece[currentPiece->index].end() ||
+                SideVector[i]->index) != PiecesTriedWithThisPiece[currentPiece->index].end() ||
                 std::find(OrderOfPieces.begin(),
                     OrderOfPieces.end(),
-                    vectorOfPieces[i]->index) != OrderOfPieces.end())
+                    SideVector[i]->index) != OrderOfPieces.end())
             {
                 continue;
             }
@@ -546,27 +442,85 @@ APuzzlePiece* AGrid::FindSuitablePiece(APuzzlePiece* currentPiece, std::vector<A
             {
                 NumPiecesRemoved += 1;
 
-                APuzzlePiece* returnedPiece = vectorOfPieces[i];
+                APuzzlePiece* returnedPiece = SideVector[i];
 
                 if (!returnedPiece->canBeUsedTwice)
                 {
-                    PiecesTriedWithThisPiece[currentPiece->index].push_back(vectorOfPieces[i]->index);
+                    PiecesTriedWithThisPiece[currentPiece->index].push_back(SideVector[i]->index);
 
-                    auto it = std::find(vectorOfPieces.begin(), vectorOfPieces.end(), vectorOfPieces[i]);
-                    vectorOfPieces.erase(it);
+                    auto it = std::find(SideVector.begin(), SideVector.end(), SideVector[i]);
+                    SideVector.erase(it);
                 }
                 else
                 {
-      
+
 
                     if (returnedPiece->timesUsed < 1)
                         returnedPiece->timesUsed++;
                     else
                     {
-                        PiecesTriedWithThisPiece[currentPiece->index].push_back(vectorOfPieces[i]->index);
+                        PiecesTriedWithThisPiece[currentPiece->index].push_back(SideVector[i]->index);
 
-                        auto it = std::find(vectorOfPieces.begin(), vectorOfPieces.end(), vectorOfPieces[i]);
-                        vectorOfPieces.erase(it);
+                        auto it = std::find(SideVector.begin(), SideVector.end(), SideVector[i]);
+                        SideVector.erase(it);
+
+                        Rotate(returnedPiece, 1);
+                    }
+                }
+                int iterations = 0;
+
+                while (returnedPiece->Left != neededSidePiece)
+                {
+                    Rotate(returnedPiece, 1);
+                    iterations++;
+                }
+                FRotator rotation = returnedPiece->GetActorRotation();
+                rotation.Pitch -= (90 * iterations);
+                returnedPiece->SetActorRotation(rotation);
+
+                return returnedPiece;
+            }
+        }
+    }
+    else if (SidePiece == EPuzzleSideType::None)
+    {
+        for (int i = 0; i < TopVector.size(); i++)
+        {
+            //Checking if vector has tried the piece before or if piece is already in use
+            if (std::find(PiecesTriedWithThisPiece[currentPiece->index].begin(),
+                PiecesTriedWithThisPiece[currentPiece->index].end(),
+                TopVector[i]->index) != PiecesTriedWithThisPiece[currentPiece->index].end() ||
+                std::find(OrderOfPieces.begin(),
+                    OrderOfPieces.end(),
+                    TopVector[i]->index) != OrderOfPieces.end())
+            {
+                continue;
+            }
+            else
+            {
+                NumPiecesRemoved += 1;
+
+                APuzzlePiece* returnedPiece = TopVector[i];
+
+                if (!returnedPiece->canBeUsedTwice)
+                {
+                    PiecesTriedWithThisPiece[currentPiece->index].push_back(TopVector[i]->index);
+
+                    auto it = std::find(TopVector.begin(), TopVector.end(), TopVector[i]);
+                    TopVector.erase(it);
+                }
+                else
+                {
+
+
+                    if (returnedPiece->timesUsed < 1)
+                        returnedPiece->timesUsed++;
+                    else
+                    {
+                        PiecesTriedWithThisPiece[currentPiece->index].push_back(TopVector[i]->index);
+
+                        auto it = std::find(TopVector.begin(), TopVector.end(), TopVector[i]);
+                        TopVector.erase(it);
 
                         Rotate(returnedPiece, 1);
                     }
@@ -589,7 +543,78 @@ APuzzlePiece* AGrid::FindSuitablePiece(APuzzlePiece* currentPiece, std::vector<A
     return nullptr;
 }
 
-APuzzlePiece* AGrid::SelectNeededVector(APuzzlePiece* currentPiece, APuzzlePiece* neededPiece, EPuzzlePieceSide side)
+EPuzzleSideType AGrid::SelectNeededSideType(EPuzzleSideType neededPiece)
 {
-    return nullptr;
+    if (neededPiece == EPuzzleSideType::InwardArrow)
+    {
+        return EPuzzleSideType::OutwardInvertedArrow;
+    }
+    if (neededPiece == EPuzzleSideType::OutwardArrow)
+    {
+        return EPuzzleSideType::InwardInvertedArrow;
+    }
+    if (neededPiece == EPuzzleSideType::InwardInvertedArrow)
+    {
+        return EPuzzleSideType::OutwardArrow;
+    }
+    if (neededPiece == EPuzzleSideType::OutwardInvertedArrow)
+    {
+        return EPuzzleSideType::InwardArrow;
+    }
+    if (neededPiece == EPuzzleSideType::Cross)
+    {
+        return EPuzzleSideType::InvertedCross;
+    }
+    if (neededPiece == EPuzzleSideType::InvertedCross)
+    {
+        return EPuzzleSideType::Cross;
+    }
+    if (neededPiece == EPuzzleSideType::Octagon)
+    {
+        return EPuzzleSideType::InvertedOctagon;
+    }
+    if (neededPiece == EPuzzleSideType::InvertedOctagon)
+    {
+        return EPuzzleSideType::Octagon;
+    }
+
+    return EPuzzleSideType::None;
+}
+
+std::vector<APuzzlePiece*> AGrid::SelectNeededVector(EPuzzleSideType neededPiece)
+{
+    if (neededPiece == EPuzzleSideType::InwardArrow)
+    {
+        return OutwardInvertedArrow;
+    }
+    if (neededPiece == EPuzzleSideType::OutwardArrow)
+    {
+        return InwardInvertedArrow;
+    }
+    if (neededPiece == EPuzzleSideType::InwardInvertedArrow)
+    {
+        return OutwardArrow;
+    }
+    if (neededPiece == EPuzzleSideType::OutwardInvertedArrow)
+    {
+        return InwardArrow;
+    }
+    if (neededPiece == EPuzzleSideType::Cross)
+    {
+        return InvertedCross;
+    }
+    if (neededPiece == EPuzzleSideType::InvertedCross)
+    {
+        return Cross;
+    }
+    if (neededPiece == EPuzzleSideType::Octagon)
+    {
+        return InvertedOctagon;
+    }
+    if (neededPiece == EPuzzleSideType::InvertedOctagon)
+    {
+        return Octagon;
+    }
+    return std::vector<APuzzlePiece*> {};
+
 }

@@ -33,11 +33,15 @@ public:
 
     void OrderPieces();
 
+    bool isPieceViable(APuzzlePiece* puzzlePiece, EPuzzleSideType SidePiece, EPuzzleSideType TopPiece);
+
     APuzzlePiece* FindNextPiece(APuzzlePiece* currentPiece);
     
-    APuzzlePiece* FindSuitablePiece(APuzzlePiece* currentPiece, std::vector<APuzzlePiece*> vectorOfPieces, EPuzzleSideType SidePiece, EPuzzleSideType TopPiece = EPuzzleSideType::None);
+    APuzzlePiece* FindSuitablePiece(APuzzlePiece* currentPiece, EPuzzleSideType SidePiece, EPuzzleSideType TopPiece = EPuzzleSideType::None);
 
-    APuzzlePiece* SelectNeededVector(APuzzlePiece* currentPiece, APuzzlePiece* neededPiece, EPuzzlePieceSide side);
+    EPuzzleSideType SelectNeededSideType(EPuzzleSideType neededPiece);
+
+    std::vector<APuzzlePiece*> SelectNeededVector(EPuzzleSideType neededPiece);
 private:
 
     int NumPiecesRemoved = 0;
