@@ -10,7 +10,7 @@
 AGrid::AGrid()
 {
     // Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-    PrimaryActorTick.bCanEverTick = false;
+    PrimaryActorTick.bCanEverTick = true;
 
     //puzzlePiece = CreateDefaultSubobject<APuzzlePiece>("PuzzlePiece");
     //AddOwnedComponent(Cast<UActorComponent>(puzzlePiece));
@@ -53,7 +53,7 @@ void AGrid::BeginPlay()
 
         SpawnLoc.X += 250;
 
-        if (i < 8)
+        if (i < 6)
         {
             int index = OrderOfPieces[i];
             //swap the i for index;
@@ -103,7 +103,7 @@ void AGrid::Reset()
     puzzlePieces[1]->Left = EPuzzleSideType::OutwardInvertedArrow;
     OutwardInvertedArrow.push_back(puzzlePieces[1]);
     puzzlePieces[1]->Right = EPuzzleSideType::Octagon;
-    Cross.push_back(puzzlePieces[1]);
+    Octagon.push_back(puzzlePieces[1]);
 
     //Piece 3
     puzzlePieces[2]->Top = EPuzzleSideType::InwardInvertedArrow;
@@ -153,7 +153,7 @@ void AGrid::Reset()
     puzzlePieces[6]->Left = EPuzzleSideType::OutwardInvertedArrow;
     OutwardInvertedArrow.push_back(puzzlePieces[6]);
     puzzlePieces[6]->Right = EPuzzleSideType::OutwardArrow;
-    InwardArrow.push_back(puzzlePieces[6]);
+    OutwardArrow.push_back(puzzlePieces[6]);
     puzzlePieces[6]->canBeUsedTwice = true;
     puzzlePieces[6]->timesUsed = 0;
 
@@ -284,7 +284,7 @@ void AGrid::OrderPieces()
     APuzzlePiece* storedLastPiece = nullptr;
     do
     {
-        if (OrderOfPieces.size() == 8) //Set to 8 to test next row
+        if (OrderOfPieces.size() == 6) //Set to 8 to test next row
             break;
 
         nextPiece = FindNextPiece(checkPiece);
@@ -310,11 +310,22 @@ void AGrid::OrderPieces()
 
             if (OrderOfPieces.size() > 1)
                 OrderOfPieces.pop_back();
+            else if (OrderOfPieces.size() == 1)
+            {
+                int pieceIndex = OrderOfPieces.at(0);
+                OrderOfPieces.pop_back();
+                if (pieceIndex == 15)
+                    pieceIndex = 0;
+                else
+                    pieceIndex++;
+                OrderOfPieces.push_back(puzzlePieces[pieceIndex]->index);
+
+                PiecesTriedWithThisPiece.Empty();
+
+            }
 
             indexBack = OrderOfPieces.back();
 
-            if (PiecesTriedWithThisPiece.Contains(indexBack))
-                PiecesTriedWithThisPiece[indexBack].clear();
             //Set the check piece to the last piece
             //Change the next piece to something else if fail
 
@@ -334,7 +345,14 @@ APuzzlePiece* AGrid::FindNextPiece(APuzzlePiece* currentPiece)
     }
 
     EPuzzleSideType neededSidePiece = currentPiece->Right;
-    EPuzzleSideType neededTopPiece = currentPiece->Top;
+    EPuzzleSideType neededTopPiece = EPuzzleSideType::None;
+
+    if (OrderOfPieces.size() >= 4)
+    {
+        int abovePieceIndex = OrderOfPieces.size() - 4;
+        //Get the piece above this pieces's bottom
+        neededTopPiece = puzzlePieces[OrderOfPieces[abovePieceIndex]]->Bottom;
+    }
 
     if (OrderOfPieces.size() % 4 == 0)
     {
@@ -397,21 +415,27 @@ APuzzlePiece* AGrid::FindSuitablePiece(APuzzlePiece* currentPiece, EPuzzleSideTy
             {
                 continue;
             }
-            
-            if (isPieceViable(SideVector[i], SidePiece, TopPiece))
+
+            if (isPieceViable(SideVector[i], neededSidePiece, neededTopPiece))
             {
                 APuzzlePiece* returnedPiece = SideVector[i];
                 int iterations = 0;
 
                 PiecesTriedWithThisPiece[currentPiece->index].push_back(SideVector[i]->index);
 
-                auto it = std::find(TopVector.begin(), TopVector.end(), SideVector[i]);
-                TopVector.erase(it);
 
-                auto it2 = std::find(SideVector.begin(), SideVector.end(), SideVector[i]);
-                SideVector.erase(it2);
+                if (std::find(TopVector.begin(), TopVector.end(), SideVector[i]) != TopVector.end())
+                {
+                    auto it = std::find(TopVector.begin(), TopVector.end(), SideVector[i]);
+                    TopVector.erase(it);
+                }
 
-                while (returnedPiece->Left != SidePiece && returnedPiece->Top != TopPiece)
+                if (std::find(SideVector.begin(), SideVector.end(), SideVector[i]) != SideVector.end())
+                {
+                    auto it2 = std::find(SideVector.begin(), SideVector.end(), SideVector[i]);
+                    SideVector.erase(it2);
+                }
+                while (returnedPiece->Left != neededSidePiece && returnedPiece->Top != neededTopPiece)
                 {
                     Rotate(returnedPiece, 1);
                     iterations++;
@@ -512,7 +536,6 @@ APuzzlePiece* AGrid::FindSuitablePiece(APuzzlePiece* currentPiece, EPuzzleSideTy
                 else
                 {
 
-
                     if (returnedPiece->timesUsed < 1)
                         returnedPiece->timesUsed++;
                     else
@@ -523,11 +546,15 @@ APuzzlePiece* AGrid::FindSuitablePiece(APuzzlePiece* currentPiece, EPuzzleSideTy
                         TopVector.erase(it);
 
                         Rotate(returnedPiece, 1);
+
+                        FRotator rotation2 = returnedPiece->GetActorRotation();
+                        rotation2.Pitch -= (90);
+                        returnedPiece->SetActorRotation(rotation2);
                     }
                 }
                 int iterations = 0;
 
-                while (returnedPiece->Left != SidePiece)
+                while (returnedPiece->Top != neededTopPiece)
                 {
                     Rotate(returnedPiece, 1);
                     iterations++;
