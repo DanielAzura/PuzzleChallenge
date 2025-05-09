@@ -33,6 +33,8 @@ public:
 
     void OrderPieces();
 
+    void ReAddToPool(APuzzlePiece* puzzlePiece);
+
     bool isPieceViable(APuzzlePiece* puzzlePiece, EPuzzleSideType SidePiece, EPuzzleSideType TopPiece);
 
     APuzzlePiece* FindNextPiece(APuzzlePiece* currentPiece);

@@ -53,7 +53,7 @@ void AGrid::BeginPlay()
 
         SpawnLoc.X += 250;
 
-        if (i < 6)
+        if (i < 7)
         {
             int index = OrderOfPieces[i];
             //swap the i for index;
@@ -67,6 +67,23 @@ void AGrid::BeginPlay()
 void AGrid::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
+    //TODO add the puzzlepieces order of pieces and see why no work
+
+    for (int i = 0; i < OrderOfPieces.size(); i++)
+    {
+        if (i > 4)
+        {
+            auto Top =puzzlePieces[OrderOfPieces[i]]->Top;
+            auto bottom = puzzlePieces[OrderOfPieces[i]]->Bottom;
+            auto left = puzzlePieces[OrderOfPieces[i]]->Left;
+            auto right = puzzlePieces[OrderOfPieces[i]]->Right;
+            int slay =5;
+
+            //It works but rotate no work
+
+        }
+    }
+
 
 }
 
@@ -284,8 +301,11 @@ void AGrid::OrderPieces()
     APuzzlePiece* storedLastPiece = nullptr;
     do
     {
-        if (OrderOfPieces.size() == 6) //Set to 8 to test next row
+        if (OrderOfPieces.size() == 7) //Set to 8 to test next row
             break;
+
+        if (OrderOfPieces.size() == 6)
+            int fo = 9;
 
         nextPiece = FindNextPiece(checkPiece);
 
@@ -307,6 +327,9 @@ void AGrid::OrderPieces()
 
             if (PiecesTriedWithThisPiece.Contains(indexBack))
                 PiecesTriedWithThisPiece[indexBack].clear();
+
+            //Readd to pool
+            ReAddToPool(puzzlePieces[indexBack]);
 
             if (OrderOfPieces.size() > 1)
                 OrderOfPieces.pop_back();
@@ -335,6 +358,107 @@ void AGrid::OrderPieces()
     } while (NumPiecesRemoved != 16);
 }
 
+void AGrid::ReAddToPool(APuzzlePiece* puzzlePiece)
+{
+    if (puzzlePiece->Top == EPuzzleSideType::InwardArrow ||
+        puzzlePiece->Bottom == EPuzzleSideType::InwardArrow ||
+        puzzlePiece->Left == EPuzzleSideType::InwardArrow ||
+        puzzlePiece->Right == EPuzzleSideType::InwardArrow)
+    {
+        if (std::find(InwardArrow.begin(), InwardArrow.end(), puzzlePiece) != InwardArrow.end())
+        {
+            //Do nothing if its already in the vector
+        }
+        else
+            InwardArrow.push_back(puzzlePiece);
+
+    }
+    if (puzzlePiece->Top == EPuzzleSideType::OutwardArrow ||
+        puzzlePiece->Bottom == EPuzzleSideType::OutwardArrow ||
+        puzzlePiece->Left == EPuzzleSideType::OutwardArrow ||
+        puzzlePiece->Right == EPuzzleSideType::OutwardArrow)
+    {
+        if (std::find(OutwardArrow.begin(), OutwardArrow.end(), puzzlePiece) != OutwardArrow.end())
+        {
+            //Do nothing if its already in the vector
+        }
+        else
+            OutwardArrow.push_back(puzzlePiece);
+    }
+    if (puzzlePiece->Top == EPuzzleSideType::InwardInvertedArrow ||
+        puzzlePiece->Bottom == EPuzzleSideType::InwardInvertedArrow ||
+        puzzlePiece->Left == EPuzzleSideType::InwardInvertedArrow ||
+        puzzlePiece->Right == EPuzzleSideType::InwardInvertedArrow)
+    {
+        if (std::find(InwardInvertedArrow.begin(), InwardInvertedArrow.end(), puzzlePiece) != InwardInvertedArrow.end())
+        {
+            //Do nothing if its already in the vector
+        }
+        else
+            InwardInvertedArrow.push_back(puzzlePiece);
+    }
+    if (puzzlePiece->Top == EPuzzleSideType::OutwardInvertedArrow ||
+        puzzlePiece->Bottom == EPuzzleSideType::OutwardInvertedArrow ||
+        puzzlePiece->Left == EPuzzleSideType::OutwardInvertedArrow ||
+        puzzlePiece->Right == EPuzzleSideType::OutwardInvertedArrow)
+    {
+        if (std::find(OutwardInvertedArrow.begin(), OutwardInvertedArrow.end(), puzzlePiece) != OutwardInvertedArrow.end())
+        {
+            //Do nothing if its already in the vector
+        }
+        else
+            OutwardInvertedArrow.push_back(puzzlePiece);
+    }
+    if (puzzlePiece->Top == EPuzzleSideType::Cross ||
+        puzzlePiece->Bottom == EPuzzleSideType::Cross ||
+        puzzlePiece->Left == EPuzzleSideType::Cross ||
+        puzzlePiece->Right == EPuzzleSideType::Cross)
+    {
+        if (std::find(Cross.begin(), Cross.end(), puzzlePiece) != Cross.end())
+        {
+            //Do nothing if its already in the vector
+        }
+        else
+            Cross.push_back(puzzlePiece);
+    }
+    if (puzzlePiece->Top == EPuzzleSideType::InvertedCross ||
+        puzzlePiece->Bottom == EPuzzleSideType::InvertedCross ||
+        puzzlePiece->Left == EPuzzleSideType::InvertedCross ||
+        puzzlePiece->Right == EPuzzleSideType::InvertedCross)
+    {
+        if (std::find(InvertedCross.begin(), InvertedCross.end(), puzzlePiece) != InvertedCross.end())
+        {
+            //Do nothing if its already in the vector
+        }
+        else
+            InvertedCross.push_back(puzzlePiece);
+    }
+    if (puzzlePiece->Top == EPuzzleSideType::Octagon ||
+        puzzlePiece->Bottom == EPuzzleSideType::Octagon ||
+        puzzlePiece->Left == EPuzzleSideType::Octagon ||
+        puzzlePiece->Right == EPuzzleSideType::Octagon)
+    {
+        if (std::find(Octagon.begin(), Octagon.end(), puzzlePiece) != Octagon.end())
+        {
+            //Do nothing if its already in the vector
+        }
+        else
+            Octagon.push_back(puzzlePiece);
+    }
+    if (puzzlePiece->Top == EPuzzleSideType::InvertedOctagon ||
+        puzzlePiece->Bottom == EPuzzleSideType::InvertedOctagon ||
+        puzzlePiece->Left == EPuzzleSideType::InvertedOctagon ||
+        puzzlePiece->Right == EPuzzleSideType::InvertedOctagon)
+    {
+        if (std::find(InvertedOctagon.begin(), InvertedOctagon.end(), puzzlePiece) != InvertedOctagon.end())
+        {
+            //Do nothing if its already in the vector
+        }
+        else
+            InvertedOctagon.push_back(puzzlePiece);
+    }
+}
+
 APuzzlePiece* AGrid::FindNextPiece(APuzzlePiece* currentPiece)
 {
     if (!PiecesTriedWithThisPiece.Contains(currentPiece->index))
@@ -358,7 +482,7 @@ APuzzlePiece* AGrid::FindNextPiece(APuzzlePiece* currentPiece)
     {
         neededSidePiece = EPuzzleSideType::None;
     }
-
+    //These are the same???
     if (OrderOfPieces.size() < 4)
     {
         neededTopPiece = EPuzzleSideType::None;
@@ -421,8 +545,10 @@ APuzzlePiece* AGrid::FindSuitablePiece(APuzzlePiece* currentPiece, EPuzzleSideTy
                 APuzzlePiece* returnedPiece = SideVector[i];
                 int iterations = 0;
 
-                PiecesTriedWithThisPiece[currentPiece->index].push_back(SideVector[i]->index);
+                if (returnedPiece->canBeUsedTwice)
+                    int fp = 0;
 
+                PiecesTriedWithThisPiece[currentPiece->index].push_back(SideVector[i]->index);
 
                 if (std::find(TopVector.begin(), TopVector.end(), SideVector[i]) != TopVector.end())
                 {
@@ -435,10 +561,14 @@ APuzzlePiece* AGrid::FindSuitablePiece(APuzzlePiece* currentPiece, EPuzzleSideTy
                     auto it2 = std::find(SideVector.begin(), SideVector.end(), SideVector[i]);
                     SideVector.erase(it2);
                 }
-                while (returnedPiece->Left != neededSidePiece && returnedPiece->Top != neededTopPiece)
+                while (1)
                 {
                     Rotate(returnedPiece, 1);
                     iterations++;
+
+                    if (returnedPiece->Left == neededSidePiece)
+                        if (returnedPiece->Top == neededTopPiece)
+                            break;
                 }
                 FRotator rotation = returnedPiece->GetActorRotation();
                 rotation.Pitch -= (90 * iterations);
@@ -510,6 +640,8 @@ APuzzlePiece* AGrid::FindSuitablePiece(APuzzlePiece* currentPiece, EPuzzleSideTy
     {
         for (int i = 0; i < TopVector.size(); i++)
         {
+            int iterations = 0;
+
             //Checking if vector has tried the piece before or if piece is already in use
             if (std::find(PiecesTriedWithThisPiece[currentPiece->index].begin(),
                 PiecesTriedWithThisPiece[currentPiece->index].end(),
@@ -546,13 +678,9 @@ APuzzlePiece* AGrid::FindSuitablePiece(APuzzlePiece* currentPiece, EPuzzleSideTy
                         TopVector.erase(it);
 
                         Rotate(returnedPiece, 1);
-
-                        FRotator rotation2 = returnedPiece->GetActorRotation();
-                        rotation2.Pitch -= (90);
-                        returnedPiece->SetActorRotation(rotation2);
+                        iterations++;
                     }
                 }
-                int iterations = 0;
 
                 while (returnedPiece->Top != neededTopPiece)
                 {
