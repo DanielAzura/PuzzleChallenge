@@ -53,7 +53,7 @@ void AGrid::BeginPlay()
 
         SpawnLoc.X += 250;
 
-        if (i < 7)
+        if (i < 16)
         {
             int index = OrderOfPieces[i];
             //swap the i for index;
@@ -253,8 +253,8 @@ void AGrid::Reset()
     InvertedOctagon.push_back(puzzlePieces[12]);
     puzzlePieces[12]->Bottom = EPuzzleSideType::InwardArrow;
     InwardArrow.push_back(puzzlePieces[12]);
-    puzzlePieces[12]->Left = EPuzzleSideType::Cross;
-    Cross.push_back(puzzlePieces[12]);
+    puzzlePieces[12]->Left = EPuzzleSideType::InvertedCross;
+    InvertedCross.push_back(puzzlePieces[12]);
     puzzlePieces[12]->Right = EPuzzleSideType::InwardArrow;
     InwardArrow.push_back(puzzlePieces[12]);
     puzzlePieces[12]->canBeUsedTwice = true;
@@ -320,11 +320,8 @@ void AGrid::OrderPieces()
     APuzzlePiece* storedLastPiece = nullptr;
     do
     {
-        if (OrderOfPieces.size() == 7) //Set to 8 to test next row
+        if (OrderOfPieces.size() == 16) //Set to 8 to test next row
             break;
-
-        if (OrderOfPieces.size() == 6)
-            int fo = 9;
 
         nextPiece = FindNextPiece(checkPiece);
 
@@ -346,8 +343,6 @@ void AGrid::OrderPieces()
 
             if (PiecesTriedWithThisPiece.Contains(indexBack))
                 PiecesTriedWithThisPiece[indexBack].clear();
-
-            //puzzlePieces[indexBack]->numRotations = 0;
 
             //Readd to pool
             ReAddToPool(puzzlePieces[indexBack]);
@@ -514,7 +509,7 @@ APuzzlePiece* AGrid::FindNextPiece(APuzzlePiece* currentPiece)
         else
             return nullptr;
     }
-    else if (OrderOfPieces.size() < 8)
+    else if (OrderOfPieces.size() < 16)
     {
         APuzzlePiece* suitablePiece = FindSuitablePiece(currentPiece, neededSidePiece, neededTopPiece);
         if (suitablePiece != nullptr)
