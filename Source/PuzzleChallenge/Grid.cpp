@@ -60,6 +60,21 @@ void AGrid::BeginPlay()
             puzzlePieces[index]->SetActorLocation(SpawnLoc);
         }
     }
+
+    for (int i = 0; i < 16; i++)
+    {
+        if (puzzlePieces[i]->numRotations != 0)
+        {
+            int numRotations = puzzlePieces[i]->numRotations;
+            numRotations *= -90;
+
+            FRotator newRotation = FRotator( numRotations, 0, 0);
+            puzzlePieces[i]->SetActorRotation(newRotation);
+
+            //It no work T.T
+        }
+    }
+
     int foo = 0;
 }
 
@@ -71,6 +86,9 @@ void AGrid::Tick(float DeltaTime)
 
     for (int i = 0; i < OrderOfPieces.size(); i++)
     {
+        int thing = puzzlePieces[OrderOfPieces[i]]->numRotations;
+        int thing2 = 2;
+
         if (i > 4)
         {
             auto Top =puzzlePieces[OrderOfPieces[i]]->Top;
@@ -278,7 +296,6 @@ void AGrid::Reset()
 void AGrid::Rotate(APuzzlePiece* puzzlePiece, int iterations)
 {
     //Rotations are always clockwise
-    FRotator rotation = puzzlePiece->GetActorRotation();
     for (int i = 0; i < iterations; i++)
     {
         EPuzzleSideType temp = puzzlePiece->Top;
@@ -287,6 +304,8 @@ void AGrid::Rotate(APuzzlePiece* puzzlePiece, int iterations)
         puzzlePiece->Left = puzzlePiece->Bottom;
         puzzlePiece->Bottom = puzzlePiece->Right;
         puzzlePiece->Right = temp;
+
+        puzzlePiece->numRotations++;
     }
 }
 
@@ -327,6 +346,8 @@ void AGrid::OrderPieces()
 
             if (PiecesTriedWithThisPiece.Contains(indexBack))
                 PiecesTriedWithThisPiece[indexBack].clear();
+
+            //puzzlePieces[indexBack]->numRotations = 0;
 
             //Readd to pool
             ReAddToPool(puzzlePieces[indexBack]);
@@ -543,10 +564,6 @@ APuzzlePiece* AGrid::FindSuitablePiece(APuzzlePiece* currentPiece, EPuzzleSideTy
             if (isPieceViable(SideVector[i], neededSidePiece, neededTopPiece))
             {
                 APuzzlePiece* returnedPiece = SideVector[i];
-                int iterations = 0;
-
-                if (returnedPiece->canBeUsedTwice)
-                    int fp = 0;
 
                 PiecesTriedWithThisPiece[currentPiece->index].push_back(SideVector[i]->index);
 
@@ -564,15 +581,11 @@ APuzzlePiece* AGrid::FindSuitablePiece(APuzzlePiece* currentPiece, EPuzzleSideTy
                 while (1)
                 {
                     Rotate(returnedPiece, 1);
-                    iterations++;
 
                     if (returnedPiece->Left == neededSidePiece)
                         if (returnedPiece->Top == neededTopPiece)
                             break;
                 }
-                FRotator rotation = returnedPiece->GetActorRotation();
-                rotation.Pitch -= (90 * iterations);
-                returnedPiece->SetActorRotation(rotation);
 
                 return returnedPiece;
             }
@@ -594,9 +607,8 @@ APuzzlePiece* AGrid::FindSuitablePiece(APuzzlePiece* currentPiece, EPuzzleSideTy
             }
             else
             {
-                NumPiecesRemoved += 1;
-
                 APuzzlePiece* returnedPiece = SideVector[i];
+                int iterations = 0;
 
                 if (!returnedPiece->canBeUsedTwice)
                 {
@@ -621,16 +633,11 @@ APuzzlePiece* AGrid::FindSuitablePiece(APuzzlePiece* currentPiece, EPuzzleSideTy
                         Rotate(returnedPiece, 1);
                     }
                 }
-                int iterations = 0;
 
                 while (returnedPiece->Left != neededSidePiece)
                 {
                     Rotate(returnedPiece, 1);
-                    iterations++;
                 }
-                FRotator rotation = returnedPiece->GetActorRotation();
-                rotation.Pitch -= (90 * iterations);
-                returnedPiece->SetActorRotation(rotation);
 
                 return returnedPiece;
             }
@@ -678,18 +685,13 @@ APuzzlePiece* AGrid::FindSuitablePiece(APuzzlePiece* currentPiece, EPuzzleSideTy
                         TopVector.erase(it);
 
                         Rotate(returnedPiece, 1);
-                        iterations++;
                     }
                 }
 
                 while (returnedPiece->Top != neededTopPiece)
                 {
                     Rotate(returnedPiece, 1);
-                    iterations++;
                 }
-                FRotator rotation = returnedPiece->GetActorRotation();
-                rotation.Pitch -= (90 * iterations);
-                returnedPiece->SetActorRotation(rotation);
 
                 return returnedPiece;
             }
