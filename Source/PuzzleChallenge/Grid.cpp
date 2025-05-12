@@ -10,11 +10,7 @@
 AGrid::AGrid()
 {
     // Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-    PrimaryActorTick.bCanEverTick = true;
-
-    //puzzlePiece = CreateDefaultSubobject<APuzzlePiece>("PuzzlePiece");
-    //AddOwnedComponent(Cast<UActorComponent>(puzzlePiece));
-
+    PrimaryActorTick.bCanEverTick = false;
 }
 
 // Called when the game starts or when spawned
@@ -82,32 +78,11 @@ void AGrid::BeginPlay()
 void AGrid::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-    //TODO add the puzzlepieces order of pieces and see why no work
-
-    for (int i = 0; i < OrderOfPieces.size(); i++)
-    {
-        int thing = puzzlePieces[OrderOfPieces[i]]->numRotations;
-        int thing2 = 2;
-
-        if (i > 4)
-        {
-            auto Top =puzzlePieces[OrderOfPieces[i]]->Top;
-            auto bottom = puzzlePieces[OrderOfPieces[i]]->Bottom;
-            auto left = puzzlePieces[OrderOfPieces[i]]->Left;
-            auto right = puzzlePieces[OrderOfPieces[i]]->Right;
-            int slay =5;
-
-            //It works but rotate no work
-
-        }
-    }
-
-
 }
 
 void AGrid::Reset()
 {
-    NumPiecesRemoved = 0;
+    //Assign all pieces and clear all the vectors (if reused)
 
     OrderOfPieces.clear();
 
@@ -312,7 +287,6 @@ void AGrid::Rotate(APuzzlePiece* puzzlePiece, int iterations)
 void AGrid::OrderPieces()
 {
     APuzzlePiece* startingPiece = puzzlePieces[FMath::RandRange(0, puzzlePieces.Num() - 1)];
-    //APuzzlePiece* startingPiece = puzzlePieces[5];
     OrderOfPieces.push_back(startingPiece->index);
 
     APuzzlePiece* checkPiece = startingPiece;
@@ -337,14 +311,12 @@ void AGrid::OrderPieces()
         else
         {
             //Reset the pieces checked with this one
-            if (NumPiecesRemoved != 0)
-                NumPiecesRemoved -= 1;
             int indexBack = OrderOfPieces.back();
 
             if (PiecesTriedWithThisPiece.Contains(indexBack))
                 PiecesTriedWithThisPiece[indexBack].clear();
 
-            //Readd to pool
+            //Readd to pool 
             ReAddToPool(puzzlePieces[indexBack]);
 
             if (OrderOfPieces.size() > 1)
@@ -358,9 +330,7 @@ void AGrid::OrderPieces()
                 else
                     pieceIndex++;
                 OrderOfPieces.push_back(puzzlePieces[pieceIndex]->index);
-
                 PiecesTriedWithThisPiece.Empty();
-
             }
 
             indexBack = OrderOfPieces.back();
@@ -371,7 +341,7 @@ void AGrid::OrderPieces()
             checkPiece = puzzlePieces[OrderOfPieces.back()];
             nextPiece = nullptr;
         }
-    } while (NumPiecesRemoved != 16);
+    } while (OrderOfPieces.size() != 16);
 }
 
 void AGrid::ReAddToPool(APuzzlePiece* puzzlePiece)
@@ -498,7 +468,7 @@ APuzzlePiece* AGrid::FindNextPiece(APuzzlePiece* currentPiece)
     {
         neededSidePiece = EPuzzleSideType::None;
     }
-    //These are the same???
+
     if (OrderOfPieces.size() < 4)
     {
         neededTopPiece = EPuzzleSideType::None;
@@ -603,7 +573,6 @@ APuzzlePiece* AGrid::FindSuitablePiece(APuzzlePiece* currentPiece, EPuzzleSideTy
             else
             {
                 APuzzlePiece* returnedPiece = SideVector[i];
-                int iterations = 0;
 
                 if (!returnedPiece->canBeUsedTwice)
                 {
@@ -642,8 +611,6 @@ APuzzlePiece* AGrid::FindSuitablePiece(APuzzlePiece* currentPiece, EPuzzleSideTy
     {
         for (int i = 0; i < TopVector.size(); i++)
         {
-            int iterations = 0;
-
             //Checking if vector has tried the piece before or if piece is already in use
             if (std::find(PiecesTriedWithThisPiece[currentPiece->index].begin(),
                 PiecesTriedWithThisPiece[currentPiece->index].end(),
@@ -656,8 +623,6 @@ APuzzlePiece* AGrid::FindSuitablePiece(APuzzlePiece* currentPiece, EPuzzleSideTy
             }
             else
             {
-                NumPiecesRemoved += 1;
-
                 APuzzlePiece* returnedPiece = TopVector[i];
 
                 if (!returnedPiece->canBeUsedTwice)
@@ -669,7 +634,6 @@ APuzzlePiece* AGrid::FindSuitablePiece(APuzzlePiece* currentPiece, EPuzzleSideTy
                 }
                 else
                 {
-
                     if (returnedPiece->timesUsed < 1)
                         returnedPiece->timesUsed++;
                     else

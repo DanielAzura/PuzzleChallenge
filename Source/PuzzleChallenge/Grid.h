@@ -46,7 +46,6 @@ public:
     std::vector<APuzzlePiece*> SelectNeededVector(EPuzzleSideType neededPiece);
 private:
 
-    int NumPiecesRemoved = 0;
     std::vector<int> OrderOfPieces;
 
     TMap<int, std::vector<int>> PiecesTriedWithThisPiece;

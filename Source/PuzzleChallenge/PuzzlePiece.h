@@ -20,15 +20,6 @@ enum class EPuzzleSideType
     None,
 };
 
-UENUM()
-enum class EPuzzlePieceSide
-{
-    Top,
-    Bottom,
-    Left,
-    Right
-};
-
 UCLASS()
 class PUZZLECHALLENGE_API APuzzlePiece : public AActor
 {
@@ -46,13 +37,15 @@ public:
     // Called every frame
     virtual void Tick(float DeltaTime) override;
 
+    // Some pieces can be used twice, this sets the pieces to be able to be used twice
     bool canBeUsedTwice = false;
+    // For pieces that can be used twice, this checks how many times its been used
     int timesUsed = 0;
+    // Index of the piece
     int index;
-
+    // Number of times that the piece has been rotated
     int numRotations = 0;
 
-    //TMap<EPuzzlePieceSide, EPuzzleSideType> 
     EPuzzleSideType Top;
     EPuzzleSideType Bottom;
     EPuzzleSideType Left;
